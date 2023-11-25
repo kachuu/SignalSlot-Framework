@@ -24,6 +24,8 @@ connect(senderObj, signal_member, receiverObj, receiverClass::slot_function);
   
 ### Disconnect signals to slots using the 'disconnect' macro.  
 'signal_member' is a member within 'senderObj'  
+When 'receiverObj' is not zero, only the connections between the signal and slots related to 'receiverObj' are removed. Connections between other 'receiverObj' signals and slots remain unaffected.  
+When 'receiverObj' is zero, remove all connections of signals and slots associated with 'senderObj'.  
 ```bash  
 disconnect(senderObj, signal_member, receiverObj);  
 ```  
