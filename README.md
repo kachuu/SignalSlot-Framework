@@ -15,14 +15,14 @@ You can connect any number of signals to a single slot, and signals can be conne
 Redirecting a signal to another slot.  
 ![image](https://github.com/kachuu/SignalSlot/blob/main/SignalSlot.jpg)  
   
-Connect signals to slots using the 'connect' macro.  
+### Connect signals to slots using the 'connect' macro.  
 'signal_member' is a member within 'senderObj'  
 'receiverClass::slot_function' is the definition of a class member function within 'receiverObj'  
 ```bash  
 connect(senderObj, signal_member, receiverObj, receiverClass::slot_function);  
 ```  
   
-Disconnect signals to slots using the 'disconnect' macro.  
+### Disconnect signals to slots using the 'disconnect' macro.  
 'signal_member' is a member within 'senderObj'  
 ```bash  
 disconnect(senderObj, signal_member, receiverObj);  
