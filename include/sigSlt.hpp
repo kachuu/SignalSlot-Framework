@@ -43,7 +43,7 @@ public:
         m_slots.clear();
     }
     void operator()(Args... args) {
-        for (shared_ptr<TSlot<Args...>> obj : m_slots) {
+        for (shared_ptr<TSlot<Args...>> &obj : m_slots) {
             obj->slot(args...);
         }
     }
