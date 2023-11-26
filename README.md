@@ -1,7 +1,7 @@
 # SignalSlot  
   Pure C++ code to implement signal & slot without using Qt's precompiled mechanism.  
   
-In programming, when we change the status, we often want another part to be notified. More generally, we want objects of any kind to be able to communicate with one another. For example, if the temperature rises to a certain point, we may want to trigger an alarm.  
+In programming, when we change the status, we often want another part to be notified. More generally, we want objects of any kind to be able to communicate with one another.  
   
 We don't use callback techniques; instead, we employ the mechanism of signals and slots. Signals are emitted when specific events occur, and slots are functions that respond to particular signals.  
   
@@ -9,24 +9,59 @@ The signature of a signal must match the signature of the receiving slot. Hence,
   
 Slots can be used for receiving signals, but they are also normal member functions. Just as an object does not know if anything receives its signals, a slot does not know if it has any signals connected to it. This ensures that truly independent components can be created.  
   
-You can connect any number of signals to a single slot, and signals can be connected to any number of slots.  
+### You can connect any number of signals to a single slot, and signals can be connected to any number of slots.  
 ![image](https://github.com/kachuu/SignalSlot/blob/main/abstract-connections.png)  
   
-Redirecting a signal to another slot.  
+### Redirecting a signal to another slot.  
+I've considered a mechanism similar to Qt's where one signal directly connects to another signal (whenever one signal is emitted, it immediately emits a second signal). However, I feel that such a mechanism isn't extremely important. It simply saves writing an extra function (possibly saving around 3 lines of code), and it's not very friendly for debugging since it's inconvenient to set breakpoints or output debug logs.  
 ![image](https://github.com/kachuu/SignalSlot/blob/main/SignalSlot.jpg)  
   
-### Connect signals to slots using the 'connect' macro.  
-'signal_member' is a member within 'senderObj'  
-'receiverClass::slot_function' is the definition of a class member function within 'receiverObj'  
+### How Signals and Slots Work  
+The signal corresponds to multiple slots, with each slot being a reference to a receiver. When the signal is emitted, it will invoke each slot associated with this signal, and the invocation order of the slots depends on their position in the slot list. The later a slot is added, the later it will be called.  
+![image](https://github.com/kachuu/SignalSlot/blob/main/SignalSlot1.jpg)  
+  
+### Connect signals to slots  
+Create an object for signal that takes an int type parameter.  
 ```bash  
-connect(senderObj, signal_member, receiverObj, receiverClass::slot_function);  
+class Sender
+{
+public:
+    TSignal<int> signal_1param;
+};
 ```  
   
-### Disconnect signals to slots using the 'disconnect' macro.  
-'signal_member' is a member within 'senderObj'  
-When 'receiverObj' is not zero, only the connections between the signal and slots related to 'receiverObj' are removed. Connections between other 'receiverObj' signals and slots remain unaffected.  
-When 'receiverObj' is zero, remove all connections of signals and slots associated with 'senderObj'.  
+Create an object that receives signal, with a slot function that takes an integer parameter.  
 ```bash  
-disconnect(senderObj, signal_member, receiverObj);  
+class Receiver
+{
+public:
+    void slot_1param(int v) {
+        //to do something
+    }
+};
+```  
+  
+Use the *connect* macro to connect signal with slot.  
+*Receiver::slot_1param* is the definition of a class member *void slot_1param(int v)* within *Receiver*  
+```bash  
+connect(Sender, signal_1param, Receiver, Receiver::slot_1param);
+```  
+  
+### Send a signal  
+Invoke the *signal_1param* object within the *Sender* object, and pass the required integer value (here using the integer 1000), thus triggering the signal handling.  
+```bash  
+sender->signal_1param(1000);
+```  
+  
+### Disconnect signals to slots  
+Use the *disconnect* macro to break the connection between signals and slots, similar to the method used in the *connect* macro.  
+When the third parameter is *not zero*, only the connections between the signal and slots related to *Receiver* object are removed. Connections between other object signals and slots remain unaffected.  
+```bash  
+disconnect(Sender, signal_1param, Receiver);
+```  
+  
+When the third parameter is *zero*, remove all connections of signals and slots associated with *Sender*.  
+```bash  
+disconnect(Sender, signal_member, 0);
 ```  
   
