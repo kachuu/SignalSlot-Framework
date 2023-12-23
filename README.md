@@ -1,4 +1,4 @@
-# SignalSlot  
+# SignalSlot Framework  
   Pure C++ code to implement signal & slot without using Qt's precompiled mechanism.  
   
 In programming, when we change the status, we often want another part to be notified. More generally, we want objects of any kind to be able to communicate with one another.  
